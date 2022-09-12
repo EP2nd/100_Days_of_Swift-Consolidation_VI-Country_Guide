@@ -9,7 +9,6 @@ import UIKit
 
 class ViewController: UITableViewController {
     var country = [Country]()
-    var countries = [Country]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,29 +17,38 @@ class ViewController: UITableViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Credits", style: .plain, target: self, action: #selector(openTapped))
         
-        performSelector(inBackground: #selector(fetchJSON), with: nil)
+        performSelector(inBackground: #selector(loadData), with: nil)
     }
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return countries.count
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return country.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        let reusableCell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        
+        guard let cell = reusableCell as? CountryCell else {
+            return reusableCell
+        }
+        
         let country = country[indexPath.row]
+        
         cell.textLabel?.text = country.name
-        cell.detailTextLabel?.text = country.flag
+        
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let detailViewController = storyboard?.instantiateViewController(withIdentifier: "Detail") as? DetailViewController {
+            detailViewController.country = country[indexPath.row]
+            navigationController?.pushViewController(detailViewController, animated: true)
         }
     }
     
-    @objc func fetchJSON() {
+    /* @objc func fetchJSON() {
         let urlString: String
         
-        urlString = "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=List_of_countries_and_dependencies_by_area"
+        urlString = "https://restcountries.com/v3.1/all?fields=name;flag;capital;language;area;population;currency"
         
         if let url = URL(string: urlString) {
             if let data = try? Data(contentsOf: url) {
@@ -54,11 +62,26 @@ class ViewController: UITableViewController {
         let decoder = JSONDecoder()
         
         if let jsonCountriesList = try? decoder.decode(Countries.self, from: json) {
-            countries = jsonCountriesList.results
+            country = jsonCountriesList.results
             
             tableView.performSelector(onMainThread: #selector(UITableView.reloadData), with: nil, waitUntilDone: false)
         } else {
             performSelector(onMainThread: #selector(showError), with: nil, waitUntilDone: false)
+        }
+    } */
+    
+    @objc func loadData() {
+        let urlString = "https://restcountries.com/v3.1/all?fields=name;flag;capital;language;area;population;currency"
+        
+        if let url = URL(string: urlString) {
+            do {
+                let data = try Data(contentsOf: url)
+                let jsonCountries = try JSONDecoder().decode([Country].self, from: data)
+                country = jsonCountries
+            }
+            catch {
+                showError()
+            }
         }
     }
     
@@ -71,7 +94,7 @@ class ViewController: UITableViewController {
     }
     
     @objc func openTapped() {
-        let alertController = UIAlertController(title: "Credits", message: "The data comes from Wikipedia.", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Credits", message: "The data comes from REST Countries website.", preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "OK", style: .default))
         self.present(alertController, animated: true)
     }

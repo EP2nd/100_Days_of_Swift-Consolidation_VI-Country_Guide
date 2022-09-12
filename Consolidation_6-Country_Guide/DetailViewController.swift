@@ -8,20 +8,64 @@
 import UIKit
 
 class DetailViewController: UITableViewController {
-    var country = [Country]()
-    var countries = [Country]()
+    var country: Country!
+    var sections = ["Capital", "Language", "Area", "Pupulation", "Currency"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Details"
-        
-        performSelector(inBackground: #selector(fetchJSON), with: nil)
+        title = "\(country.name)"
     }
     
-    @objc func fetchJSON() {
-        let urlString: String
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count
+    }
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sections[section]
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Detail", for: indexPath)
         
-        //urlString = "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=\(country.name)"
+        switch indexPath.section {
+        case 0:
+            guard let capital = country?.capital else {
+                return cell
+            }
+            cell.textLabel?.text = capital
+            return cell
+        case 1:
+            guard let language = country?.language else {
+                return cell
+            }
+            cell.textLabel?.text = language
+            return cell
+        case 2:
+            guard let area = country?.area else {
+                return cell
+            }
+            cell.textLabel?.text = "\(area)"
+            return cell
+        case 3:
+            guard let population = country?.population else {
+                return cell
+            }
+            cell.textLabel?.text = "\(population)"
+            return cell
+        case 4:
+            guard let currency = country?.currency else {
+                return cell
+            }
+            cell.textLabel?.text = currency
+            return cell
+        default:
+            cell.textLabel?.text = ""
+            return cell
+        }
     }
 }

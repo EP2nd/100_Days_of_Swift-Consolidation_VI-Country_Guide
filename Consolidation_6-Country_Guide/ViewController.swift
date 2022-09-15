@@ -17,7 +17,7 @@ class ViewController: UITableViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Credits", style: .plain, target: self, action: #selector(openTapped))
         
-        performSelector(inBackground: #selector(loadData), with: nil)
+        performSelector(inBackground: #selector(loadListOfCountries), with: nil)
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -45,17 +45,11 @@ class ViewController: UITableViewController {
         }
     }
     
-    /* @objc func fetchJSON() {
-        let urlString: String
+    @objc func loadListOfCountries() {
+        guard let urlPath = Bundle.main.url(forResource: "countries", withExtension: "json") else { return }
+        guard let data = try? Data(contentsOf: urlPath) else { return }
         
-        urlString = "https://restcountries.com/v3.1/all?fields=name;flag;capital;language;area;population;currency"
-        
-        if let url = URL(string: urlString) {
-            if let data = try? Data(contentsOf: url) {
-                self.parse(json: data)
-                return
-            }
-        }
+        parse(json: data)
     }
     
     func parse(json: Data) {
@@ -68,33 +62,18 @@ class ViewController: UITableViewController {
         } else {
             performSelector(onMainThread: #selector(showError), with: nil, waitUntilDone: false)
         }
-    } */
-    
-    @objc func loadData() {
-        let urlString = "https://restcountries.com/v3.1/all?fields=name;flag;capital;language;area;population;currency"
-        
-        if let url = URL(string: urlString) {
-            do {
-                let data = try Data(contentsOf: url)
-                let jsonCountries = try JSONDecoder().decode([Country].self, from: data)
-                country = jsonCountries
-            }
-            catch {
-                showError()
-            }
-        }
     }
     
     @objc func showError() {
         DispatchQueue.main.async {
-            let alertController = UIAlertController(title: "Loading error", message: "There was a problem loading the feed; please check your connection and try again.", preferredStyle: .alert)
+            let alertController = UIAlertController(title: "Loading error", message: "There was a problem with loading the feed, the .json file may be corrupted.", preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default))
             self.present(alertController, animated: true)
         }
     }
     
     @objc func openTapped() {
-        let alertController = UIAlertController(title: "Credits", message: "The data comes from REST Countries website.", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Credits", message: "Source: wikipedia.org", preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "OK", style: .default))
         self.present(alertController, animated: true)
     }

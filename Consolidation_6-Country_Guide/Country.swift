@@ -9,10 +9,9 @@ import Foundation
 
 struct Country: Codable {
     var name: String
-    var flag: String
     var capital: String
     var language: String
-    var area: Double?
-    var population: Double?
+    var area: String
+    var population: String
     var currency: String
 }

@@ -15,6 +15,7 @@ class DetailViewController: UITableViewController {
         super.viewDidLoad()
         
         title = "\(country.name)"
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -30,7 +31,9 @@ class DetailViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Detail", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DetailCell", for: indexPath)
+        
+        cell.textLabel?.numberOfLines = 0
         
         switch indexPath.section {
         case 0:
@@ -49,13 +52,13 @@ class DetailViewController: UITableViewController {
             guard let area = country?.area else {
                 return cell
             }
-            cell.textLabel?.text = "\(area)"
+            cell.textLabel?.text = area
             return cell
         case 3:
             guard let population = country?.population else {
                 return cell
             }
-            cell.textLabel?.text = "\(population)"
+            cell.textLabel?.text = population
             return cell
         case 4:
             guard let currency = country?.currency else {

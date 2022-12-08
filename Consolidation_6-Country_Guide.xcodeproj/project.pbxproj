@@ -74,9 +74,9 @@
 				B81994FD28CF4D6400CAB40D /* Countries.swift */,
 				B8D85B5D28C634BE00EFA18C /* Country.swift */,
 				B8D85B4D28C62FCD00EFA18C /* Main.storyboard */,
-				B8D85B5028C62FD200EFA18C /* Assets.xcassets */,
 				B8D85B5228C62FD200EFA18C /* LaunchScreen.storyboard */,
 				B8D85B5528C62FD200EFA18C /* Info.plist */,
+				B8D85B5028C62FD200EFA18C /* Assets.xcassets */,
 				B8148DAC28CFC28D0005C370 /* countries.json */,
 			);
 			path = "Consolidation_6-Country_Guide";

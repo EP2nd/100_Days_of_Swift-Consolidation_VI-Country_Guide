@@ -8,13 +8,16 @@
 import UIKit
 
 class DetailViewController: UITableViewController {
+    
     var country: Country!
+    
     var sections = ["Capital", "Language", "Area", "Pupulation", "Currency"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "\(country.name)"
+        
         navigationItem.largeTitleDisplayMode = .never
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
@@ -33,8 +36,8 @@ class DetailViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "DetailCell", for: indexPath)
         
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DetailCell", for: indexPath)
         cell.textLabel?.numberOfLines = 0
         
         switch indexPath.section {
@@ -75,12 +78,14 @@ class DetailViewController: UITableViewController {
     }
     
     @objc func shareTapped() {
+        
         guard let country = country else { return }
         
         let countryFact = "Did you know that \(country.name)'s capital is \(country.capital), its official spoken language is \(country.language), its area amounts to \(country.area) and population to \(country.population), and that its currency is \(country.currency)? Well, now you know, thanks to Country Guide app! Check it out on the App Store!"
         
         let viewController = UIActivityViewController(activityItems: [countryFact], applicationActivities: [])
         viewController.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        
         present(viewController, animated: true)
     }
 }
